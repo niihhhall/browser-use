@@ -1,0 +1,24 @@
+# docker-compose.yml for browser-use
+# Dokploy deployment for Markeye / niihhhall
+
+services:
+  browser-use:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: browser-use
+    restart: unless-stopped
+    ports:
+      - "9242:9242"
+      - "9222:9222"
+    volumes:
+      - browser-use-data:/data
+    env_file:
+      - .env
+    environment:
+      - IN_DOCKER=True
+      - PYTHONUNBUFFERED=1
+
+volumes:
+  browser-use-data:
+    driver: local
