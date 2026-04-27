@@ -9,16 +9,14 @@ services:
     container_name: browser-use
     restart: unless-stopped
     ports:
-      - "7788:7788"
       - "9222:9222"
-    volumes:
-      - browser-use-data:/data
     environment:
       - IN_DOCKER=True
       - PYTHONUNBUFFERED=1
       - BROWSERUSE_HEADLESS=true
       - ANONYMIZED_TELEMETRY=false
-    command: ["python", "-m", "browser_use.cli", "--host", "0.0.0.0", "--port", "7788"]
+      - CHROME_PATH=/usr/bin/chromium
+    command: ["browser-use", "--mcp"]
 
 volumes:
   browser-use-data:
