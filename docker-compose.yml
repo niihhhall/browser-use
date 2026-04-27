@@ -1,5 +1,6 @@
 # docker-compose.yml for browser-use
 # Dokploy deployment for Markeye / niihhhall
+# Hermes (on Coolify) connects remotely via CDP on port 9222
 
 services:
   browser-use:
@@ -10,13 +11,25 @@ services:
     restart: unless-stopped
     ports:
       - "9222:9222"
+    volumes:
+      - browser-use-data:/data
     environment:
       - IN_DOCKER=True
       - PYTHONUNBUFFERED=1
       - BROWSERUSE_HEADLESS=true
       - ANONYMIZED_TELEMETRY=false
-      - CHROME_PATH=/usr/bin/chromium
-    command: ["browser-use", "--mcp"]
+    # Start chromium with remote debugging enabled so Hermes can connect via CDP
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        /usr/bin/chromium \
+          --headless=new \
+          --no-sandbox \
+          --disable-dev-shm-usage \
+          --disable-gpu \
+          --remote-debugging-address=0.0.0.0 \
+          --remote-debugging-port=9222 \
+          --user-data-dir=/data/profiles/default
 
 volumes:
   browser-use-data:
